@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Precision Intraday Trading — Price Action & Structure System</title>
+<meta name="description" content="Precision Intraday Trading — price action, market structure, liquidity and structural risk management. A complete 11-module course.">
+<style>
+:root{
+--bg:#0b0f1a;--panel:#131a29;--panel2:#0e1626;--line:#1f2a3d;--line2:#24324d;
+--txt:#e8edf7;--txt2:#c3cfe3;--muted:#8c9bb5;
+--up:#26a69a;--dn:#ef5350;--acc:#ffb300;--blue:#4fa3ff;--purp:#b07cff;
+--pink:#ff7ab8;--cyan:#4fd1e0;--green:#34d399;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);
+font:16px/1.72 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+padding-bottom:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 26px}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(11,15,26,.93);
+backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+display:flex;align-items:center;justify-content:space-between;
+padding:11px 26px;gap:14px}
+.home{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
+.logo{color:var(--blue);font-size:19px}
+.name{color:var(--txt);font-weight:700;font-size:15px;letter-spacing:-.2px;
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topright{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.modlabel{color:var(--muted);font-size:12.5px;font-weight:600;
+letter-spacing:.6px;white-space:nowrap}
+.menubtn{background:#18233a;border:1px solid var(--line2);color:var(--txt);
+width:36px;height:34px;border-radius:8px;font-size:16px;cursor:pointer;
+line-height:1}
+.menubtn:hover{background:#1f2c48}
+
+/* drawer */
+.drawer{position:fixed;top:0;right:-380px;width:360px;max-width:88vw;height:100%;
+background:#0d1424;border-left:1px solid var(--line2);z-index:80;
+transition:right .26s ease;overflow-y:auto;padding:26px 0}
+.drawer.open{right:0}
+.drawer-inner{padding:0 24px}
+.drawer h4{color:var(--muted);font-size:11.5px;letter-spacing:2px;
+text-transform:uppercase;margin-bottom:16px;font-weight:750}
+.toc-mod{margin-bottom:6px}
+.toc-mod>a{display:flex;gap:11px;align-items:baseline;padding:9px 12px;
+border-radius:8px;text-decoration:none;color:var(--txt2);font-size:14.4px;
+transition:background .15s}
+.toc-mod>a:hover{background:#18233a;color:#fff}
+.toc-mod>a.active{background:#1b2a47;color:#fff}
+.toc-mod .n{color:var(--blue);font-weight:750;font-size:12px;min-width:20px}
+.toc-mod a .done-dot{margin-left:auto;color:var(--green);font-size:12px;
+opacity:0;transition:opacity .2s}
+.toc-mod a.done .done-dot{opacity:1}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:70;
+opacity:0;pointer-events:none;transition:opacity .26s}
+.scrim.open{opacity:1;pointer-events:auto}
+
+/* page header */
+.pagehead{background:linear-gradient(135deg,#131c30,#0d1424);
+border-bottom:1px solid #22304a;padding:46px 0 36px;margin-bottom:42px}
+.kicker{color:var(--blue);font-size:12.5px;font-weight:700;letter-spacing:2.4px;
+text-transform:uppercase;margin-bottom:13px}
+.pagehead h1{font-size:34px;line-height:1.2;font-weight:800;letter-spacing:-.5px}
+.sub{color:var(--muted);font-size:15.4px;margin-top:15px;max-width:700px}
+.recap{background:#101a2c;border:1px solid var(--line2);border-radius:10px;
+padding:16px 20px;margin-top:24px;font-size:14.4px;color:#9fb2d0;max-width:760px}
+.recap b{color:var(--green)}
+
+/* typography */
+h2{font-size:26px;font-weight:750;margin:58px 0 10px;letter-spacing:-.3px;
+padding-top:24px;border-top:1px solid var(--line);scroll-margin-top:70px}
+main>h2:first-child{border-top:none;padding-top:0;margin-top:0}
+h2 .num{color:var(--blue);font-size:13.5px;display:block;font-weight:700;
+letter-spacing:2px;margin-bottom:8px;text-transform:uppercase}
+h3{font-size:19px;font-weight:700;margin:36px 0 11px;color:#d7e2f5}
+h4{font-weight:700}
+p{margin:15px 0;color:var(--txt2)}
+strong,b{color:#fff;font-weight:650}
+em{color:#ffd580;font-style:normal;font-weight:600}
+a{color:var(--blue)}
+ul,ol{margin:15px 0 15px 24px}
+li{margin:9px 0;color:var(--txt2)}
+code{background:#0a1418;border:1px solid #1d4653;border-radius:4px;
+padding:1px 7px;font-size:13.6px;color:#7fe3f0;
+font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+/* charts */
+.chart{margin:36px 0;background:var(--panel2);border:1px solid var(--line2);
+border-radius:13px;overflow:hidden}
+.chart img{width:100%;display:block}
+.chart figcaption{padding:15px 20px;font-size:13.6px;color:#93a4c0;
+border-top:1px solid #1e2a42;background:#0c1322;line-height:1.62}
+.chart figcaption b{color:#cfe0ff}
+
+/* blocks */
+.look{background:#111c30;border-left:4px solid var(--blue);padding:21px 25px;
+margin:28px 0;border-radius:0 10px 10px 0}
+.look h4{color:var(--blue);font-size:13px;letter-spacing:1.6px;font-weight:750;
+text-transform:uppercase;margin-bottom:13px}
+.look ol,.look ul{margin:0 0 0 21px}
+.look li{margin:12px 0}
+.key{background:linear-gradient(135deg,#132a24,#0f2119);border:1px solid #1f6b52;
+border-radius:11px;padding:23px 27px;margin:32px 0}
+.key .lbl{color:var(--green);font-size:11.5px;letter-spacing:2px;font-weight:750;
+text-transform:uppercase;margin-bottom:10px}
+.key p{color:#d8f5e9;font-size:17.5px;margin:0;font-weight:600;line-height:1.56}
+.warn{background:#2a1618;border:1px solid #6b2430;border-radius:11px;
+padding:21px 26px;margin:30px 0}
+.warn .lbl{color:#ff8a8a;font-size:11.5px;letter-spacing:2px;font-weight:750;
+text-transform:uppercase;margin-bottom:10px}
+.warn p{color:#f6d5d5;margin:9px 0}
+.warn p:first-of-type{margin-top:0}
+.warn ol,.warn ul{margin:10px 0 0 22px}
+.warn li{color:#f6d5d5;margin:7px 0}
+.dev{background:#0d1a1f;border:1px solid #1f5a6b;border-radius:11px;
+padding:21px 26px;margin:30px 0}
+.dev .lbl{color:var(--cyan);font-size:11.5px;letter-spacing:2px;font-weight:750;
+text-transform:uppercase;margin-bottom:10px}
+.dev p{color:#c9e8ef;margin:9px 0}
+.dev p:first-of-type{margin-top:0}
+.defn{background:#101a2c;border:1px solid var(--line2);border-radius:9px;
+padding:14px 18px;margin:12px 0}
+.defn .term{display:block;color:var(--acc);font-weight:750;font-size:14px;
+letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
+.defn .body{color:var(--txt2);font-size:15px}
+
+/* tables */
+table{width:100%;border-collapse:collapse;margin:28px 0;font-size:14.6px;
+display:block;overflow-x:auto;white-space:normal}
+thead th{background:#182338;color:#a9bcd8;text-align:left;padding:12px 15px;
+font-size:12.4px;letter-spacing:.9px;text-transform:uppercase;font-weight:700;
+border-bottom:2px solid var(--line2);white-space:nowrap}
+td{padding:12px 15px;border-bottom:1px solid var(--line);color:var(--txt2);
+vertical-align:top;min-width:120px}
+tbody tr:last-child td{border-bottom:none}
+td.no{color:#ff8a8a;font-weight:650}
+td.yes{color:var(--green);font-weight:650}
+td.mid{color:var(--acc);font-weight:650}
+
+pre.flow{background:var(--panel2);border:1px solid var(--line2);
+border-radius:11px;padding:22px 24px;margin:28px 0;
+font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;
+color:#9fb2d0;overflow-x:auto;line-height:1.72}
+pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+/* split cards */
+.split{display:flex;gap:16px;flex-wrap:wrap;margin:28px 0}
+.half{flex:1;min-width:265px;border-radius:11px;padding:20px 23px}
+.half.bad{background:#2a1618;border:1px solid #6b2430}
+.half.good{background:#0f2119;border:1px solid #1f6b52}
+.half.neutral{background:#101a2c;border:1px solid var(--line2)}
+.half h5{font-size:12.8px;letter-spacing:1.5px;text-transform:uppercase;
+font-weight:750;margin-bottom:11px}
+.half.bad h5{color:#ff8a8a}
+.half.good h5{color:var(--green)}
+.half.neutral h5{color:var(--blue)}
+.half p{margin:0;font-size:14.6px}
+.half.bad p{color:#f6d5d5}
+.half.good p{color:#d8f5e9}
+.half.neutral p{color:var(--txt2)}
+
+/* practical */
+.prac{background:#1a1430;border:1px solid #4a3a7c;border-radius:12px;
+padding:25px 29px;margin:32px 0}
+.prac .lbl{color:var(--purp);font-size:11.5px;letter-spacing:2px;font-weight:750;
+text-transform:uppercase;margin-bottom:7px}
+.prac h4{color:#fff;font-size:20px;font-weight:700;margin-bottom:6px}
+.prac .meta{color:#9b8cc4;font-size:13.2px;margin-bottom:15px}
+.prac p,.prac li{color:#d5cbf0}
+.prac pre{background:#0d0a18;border:1px solid #3a2f63;border-radius:8px;
+padding:16px 18px;margin:15px 0;font-size:12.7px;color:#b9a9e8;overflow-x:auto;
+line-height:1.74;white-space:pre}
+
+/* quiz */
+.quiz{background:#16203a;border:2px solid #3b5a8c;border-radius:14px;
+padding:29px 31px;margin:46px 0}
+.quiz .lbl{color:var(--acc);font-size:12px;letter-spacing:2.2px;font-weight:750;
+text-transform:uppercase;margin-bottom:14px}
+.quiz .q{font-size:19.5px;font-weight:650;color:#fff;margin-bottom:22px;
+line-height:1.5}
+.opts{display:flex;flex-direction:column;gap:0}
+.opt{background:#0f1930;border:1px solid #2a3b5c;border-radius:10px;
+padding:15px 18px;margin:0 0 11px;display:flex;gap:14px;align-items:flex-start;
+width:100%;text-align:left;cursor:pointer;font:inherit;color:inherit;
+transition:border-color .16s,background .16s;position:relative}
+.opt:hover{background:#142139;border-color:#42618f}
+.opt .ltr{background:#2a3b5c;color:#cfe0ff;width:28px;height:28px;flex:0 0 28px;
+border-radius:7px;display:flex;align-items:center;justify-content:center;
+font-weight:750;font-size:14px;transition:background .16s,color .16s}
+.opt .txt{color:#c9d6ea;font-size:15.2px;line-height:1.56;flex:1}
+.opt .mark{flex:0 0 auto;font-weight:800;font-size:15px;opacity:0;
+transition:opacity .2s;align-self:center}
+.opt.picked{cursor:default}
+.opt.picked.correct{border-color:var(--green);background:#11261e}
+.opt.picked.correct .ltr{background:var(--green);color:#08130f}
+.opt.picked.correct .mark{opacity:1;color:var(--green)}
+.opt.picked.correct .mark::after{content:"✓"}
+.opt.picked.wrong{border-color:var(--dn);background:#251518}
+.opt.picked.wrong .ltr{background:var(--dn);color:#1a0808}
+.opt.picked.wrong .mark{opacity:1;color:var(--dn)}
+.opt.picked.wrong .mark::after{content:"✕"}
+.quiz.answered .opt:not(.picked){opacity:.5}
+.quiz.answered .opt:not(.picked).correct{opacity:1;border-color:#1f6b52;
+background:#0f1f1a}
+.quiz.answered .opt:not(.picked).correct .ltr{background:#1f6b52;color:#d8f5e9}
+.quiz.answered .opt:not(.picked).correct .mark{opacity:.85;color:var(--green)}
+.quiz.answered .opt:not(.picked).correct .mark::after{content:"✓"}
+.fb{display:none;border-radius:10px;padding:19px 22px;margin:-3px 0 15px;
+font-size:15px;line-height:1.68;animation:fbin .28s ease}
+@keyframes fbin{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.fb.show{display:block}
+.fb.correct{background:#0f2119;border:1px solid #1f6b52;color:#d8f5e9}
+.fb.wrong{background:#231518;border:1px solid #5e2530;color:#f0d8dc}
+.fb p{margin:10px 0}
+.fb p:first-of-type{margin-top:0}
+.fb p:last-child{margin-bottom:0}
+.fb strong{color:#fff}
+.fb em{color:#ffd580}
+.fb .fb-head{font-size:11.5px;letter-spacing:2px;text-transform:uppercase;
+font-weight:750;margin-bottom:11px}
+.fb.correct .fb-head{color:var(--green)}
+.fb.correct .fb-head::after{content:"✓  Correct"}
+.fb.wrong .fb-head{color:#ff8a8a}
+.fb.wrong .fb-head::after{content:"✕  Not quite — here is why"}
+.qnote{color:#93a4c0;font-size:14.4px;margin-top:18px}
+
+.summary{background:var(--panel2);border:1px solid var(--line2);
+border-radius:12px;padding:27px 31px;margin:36px 0}
+.summary ol{margin-left:21px}
+.summary li{margin:11px 0}
+.summary li b{color:#fff}
+
+/* nav */
+.pagenav{display:flex;gap:16px;margin:60px 0 20px;justify-content:space-between}
+.navbtn{flex:1;max-width:48%;background:var(--panel2);
+border:1px solid var(--line2);border-radius:12px;padding:18px 22px;
+text-decoration:none;display:block;transition:border-color .16s,background .16s}
+.navbtn:hover{border-color:#42618f;background:#141e33}
+.navbtn .dir{display:block;color:var(--blue);font-size:12.4px;font-weight:700;
+letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px}
+.navbtn .ttl{display:block;color:var(--txt);font-size:15.4px;font-weight:600;
+line-height:1.42}
+.navbtn.next{text-align:right}
+
+/* index page */
+.hero{padding:70px 0 20px}
+.hero h1{font-size:46px;line-height:1.1;letter-spacing:-1.2px;font-weight:850;
+margin-bottom:20px}
+.hero .lede{font-size:18.5px;color:var(--muted);max-width:720px;line-height:1.65}
+.pills{display:flex;flex-wrap:wrap;gap:9px;margin:26px 0 0}
+.pill{background:#1b2740;border:1px solid #2c3d5c;color:#9fb2d0;font-size:12.6px;
+padding:6px 14px;border-radius:99px;font-weight:600}
+.pill.no{background:#241619;border-color:#5e2530;color:#ffa9a9}
+.modgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
+gap:16px;margin:34px 0}
+.modcard{background:var(--panel2);border:1px solid var(--line2);
+border-radius:13px;padding:22px 24px;text-decoration:none;display:block;
+transition:border-color .16s,transform .16s,background .16s;position:relative}
+.modcard:hover{border-color:#42618f;background:#141e33;transform:translateY(-2px)}
+.modcard .mnum{color:var(--blue);font-size:12px;font-weight:750;
+letter-spacing:2px;text-transform:uppercase;margin-bottom:9px;display:block}
+.modcard h3{color:#fff;font-size:18.5px;margin:0 0 9px;line-height:1.32}
+.modcard p{color:var(--muted);font-size:14.2px;margin:0;line-height:1.6}
+.modcard .tick{position:absolute;top:18px;right:20px;color:var(--green);
+font-size:15px;opacity:0;transition:opacity .2s}
+.modcard.done .tick{opacity:1}
+.modcard.done{border-color:#1f6b52}
+.startbtn{display:inline-block;background:var(--blue);color:#06101f;
+font-weight:750;font-size:16px;padding:15px 34px;border-radius:11px;
+text-decoration:none;margin-top:10px;transition:transform .14s,box-shadow .14s}
+.startbtn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(79,163,255,.28)}
+.resetbtn{background:none;border:1px solid var(--line2);color:var(--muted);
+font-size:13px;padding:8px 16px;border-radius:8px;cursor:pointer;
+margin-left:14px;font-family:inherit}
+.resetbtn:hover{border-color:#42618f;color:var(--txt)}
+.notice{background:#1a1430;border:1px solid #4a3a7c;border-radius:12px;
+padding:22px 26px;margin:34px 0}
+.notice h4{color:var(--purp);font-size:12px;letter-spacing:2px;
+text-transform:uppercase;margin-bottom:10px}
+.notice p{color:#d5cbf0;margin:9px 0}
+.notice p:first-of-type{margin-top:0}
+
+/* footer */
+.sitefoot{margin-top:70px;border-top:1px solid var(--line);
+background:#0a0e18;padding:34px 0 40px}
+.sitefoot p{color:#6e7f99;font-size:13.2px;line-height:1.7;max-width:820px}
+.sitefoot strong{color:#93a4c0}
+.foot2{margin-top:14px;font-size:12.4px;color:#4f5d74}
+
+@media(max-width:700px){
+.wrap{padding:0 18px}
+.pagehead h1{font-size:27px}
+.hero h1{font-size:33px}
+.hero .lede{font-size:16.5px}
+h2{font-size:22px}
+.quiz{padding:22px 19px}
+.quiz .q{font-size:17.5px}
+.opt{padding:13px 14px;gap:11px}
+.opt .txt{font-size:14.4px}
+.pagenav{flex-direction:column}
+.navbtn{max-width:100%}
+.navbtn.next{text-align:left}
+.modlabel{display:none}
+.prac{padding:20px 18px}
+.look{padding:18px 19px}
+}
+@media print{
+.topbar,.drawer,.scrim,.pagenav{display:none}
+body{background:#fff;color:#000}
+.fb{display:block!important}
+}
+</style>
+</head>
+<body data-page="index">
+
+<div class="topbar">
+  <a class="home" href="index.html">
+    <span class="logo">◈</span>
+    <span class="name">Precision Intraday Trading</span>
+  </a>
+  <div class="topright">
+    <span class="modlabel">11-module course</span>
+    <button class="menubtn" id="menubtn" aria-label="Contents">☰</button>
+  </div>
+</div>
+<div class="drawer" id="drawer"><div class="drawer-inner">
+  <h4>Course contents</h4>
+  <div class="toc-mod"><a href="module-01.html" data-key="module-01"><span class="n">01</span><span>Philosophy</span><span class="done-dot">✓</span></a></div><div class="toc-mod"><a href="module-02.html" data-key="module-02"><span class="n">02</span><span>Market Structure</span><span class="done-dot">✓</span></a></div><div class="toc-mod"><a href="module-03.html" data-key="module-03"><span class="n">03</span><span>Support & Resistance</span><span class="done-dot">✓</span></a></div><div class="toc-mod"><a href="module-04.html" data-key="module-04"><span class="n">04</span><span>The 15M Entry Model</span><span class="done-dot">✓</span></a></div><div class="toc-mod"><a href="module-05.html" data-key="module-05"><span class="n">05</span><span>Candlestick Triggers</span><span class="done-dot">✓</span></a></div><div class="toc-mod"><a href="module-06.html" data-key="module-06"><span class="n">06</span><span>Execution Blueprint</span><span class="done-dot">✓</span></a></div><div class="toc-mod"><a href="module-07.html" data-key="module-07"><span class="n">07</span><span>Trade Management</span><span class="done-dot">✓</span></a></div><div class="toc-mod"><a href="module-08.html" data-key="module-08"><span class="n">08</span><span>When NOT to Trade</span><span class="done-dot">✓</span></a></div><div class="toc-mod"><a href="module-09.html" data-key="module-09"><span class="n">09</span><span>Risk Management</span><span class="done-dot">✓</span></a></div><div class="toc-mod"><a href="module-10.html" data-key="module-10"><span class="n">10</span><span>Complete Trades</span><span class="done-dot">✓</span></a></div><div class="toc-mod"><a href="module-11.html" data-key="module-11"><span class="n">11</span><span>The Rulebook</span><span class="done-dot">✓</span></a></div>
+</div></div>
+<div class="scrim" id="scrim"></div>
+
+
+<main class="wrap">
+
+<section class="hero">
+<h1>Elite Precision Intraday Trading</h1>
+<p class="lede">A complete eleven-module course in price action, market
+structure, liquidity and structural risk management. No indicators, no
+signals, no scalping — a disciplined framework for reading the 4-hour
+environment, locating opportunity on the 1-hour, and executing on the
+15-minute chart.</p>
+<div class="pills">
+<span class="pill">Pure price action</span>
+<span class="pill">Market structure</span>
+<span class="pill">Supply &amp; demand</span>
+<span class="pill">Liquidity &amp; sweeps</span>
+<span class="pill">BOS · MSS · Displacement</span>
+<span class="pill">Structural risk management</span>
+<span class="pill no">No indicators</span>
+<span class="pill no">No scalping</span>
+</div>
+<p style="margin-top:30px"><a class="startbtn" href="module-01.html">Start
+Module 1 →</a><button class="resetbtn" id="resetprog">Reset
+progress</button></p>
+</section>
+
+<div class="notice">
+<h4>How to use this course</h4>
+<p>Work through the modules in order. Each one builds on the last, and several
+carry practical exercises whose output is used in the next module.</p>
+<p>Throughout you will find <strong>check-your-understanding questions</strong>.
+Click any option and you get a written response to <em>that specific
+choice</em> — why it fails, or why it works — plus the full explanation of the
+correct answer. There are no wrong turns; every option teaches something.</p>
+<p>Your progress is saved in this browser. Completed modules show a green
+tick.</p>
+</div>
+
+<h2><span class="num">Contents</span>The eleven modules</h2>
+<div class="modgrid"><a class="modcard" href="module-01.html" data-modkey="module-01"><span class="tick">✓</span><span class="mnum">Module 01</span><h3>Precision Intraday Trading Philosophy</h3><p>What precision means, why this is not scalping, the timeframe hierarchy, and probability-based thinking.</p></a><a class="modcard" href="module-02.html" data-modkey="module-02"><span class="tick">✓</span><span class="mnum">Module 02</span><h3>Reading Market Structure</h3><p>Swings, HH/HL/LH/LL, BOS, MSS, and displacement — how to read structure on 4H, 1H and 15M.</p></a><a class="modcard" href="module-03.html" data-modkey="module-03"><span class="tick">✓</span><span class="mnum">Module 03</span><h3>Mapping High-Quality Support & Resistance</h3><p>Building real zones from price behaviour, ranking them, and understanding the liquidity that pools around them.</p></a><a class="modcard" href="module-04.html" data-modkey="module-04"><span class="tick">✓</span><span class="mnum">Module 04</span><h3>The 15M Price-Action Entry Model</h3><p>The complete entry sequence — minimum conditions, strengthening conditions, and invalidation.</p></a><a class="modcard" href="module-05.html" data-modkey="module-05"><span class="tick">✓</span><span class="mnum">Module 05</span><h3>15M Candlestick Triggers & Price Psychology</h3><p>What each candle represents, where it is meaningful, and what invalidates it. Never as isolated signals.</p></a><a class="modcard" href="module-06.html" data-modkey="module-06"><span class="tick">✓</span><span class="mnum">Module 06</span><h3>Complete Trade Execution Blueprint</h3><p>The full execution process end to end, including the stop and target rules that govern everything.</p></a><a class="modcard" href="module-07.html" data-modkey="module-07"><span class="tick">✓</span><span class="mnum">Module 07</span><h3>Fast Intraday Trade Management</h3><p>Managing a live position without turning the system into scalping. Never manage by the clock.</p></a><a class="modcard" href="module-08.html" data-modkey="module-08"><span class="tick">✓</span><span class="mnum">Module 08</span><h3>When Not to Trade</h3><p>The conditions that make standing aside correct, and the psychology that makes it hard.</p></a><a class="modcard" href="module-09.html" data-modkey="module-09"><span class="tick">✓</span><span class="mnum">Module 09</span><h3>Prop-Firm Risk Management</h3><p>Sizing maths, loss limits, correlation exposure, and capital preservation under prop-firm constraints.</p></a><a class="modcard" href="module-10.html" data-modkey="module-10"><span class="tick">✓</span><span class="mnum">Module 10</span><h3>Complete Hypothetical Trades</h3><p>Two full worked trades from environment to exit, including what would have invalidated each.</p></a><a class="modcard" href="module-11.html" data-modkey="module-11"><span class="tick">✓</span><span class="mnum">Module 11</span><h3>Final Precision Intraday Rulebook</h3><p>The complete rulebook, checklists, and the testing and review protocol.</p></a></div>
+
+<h2><span class="num">Before you begin</span>What this course is, and is not</h2>
+<div class="split">
+<div class="half good"><h5>What it is</h5><p>A structural framework for
+intraday decision-making. It teaches you where to look, what constitutes
+evidence, where risk is defined, and — most importantly — when to do
+nothing.</p></div>
+<div class="half bad"><h5>What it is not</h5><p>A signal service, a set of
+guaranteed setups, or a promise of profitability. No method removes
+uncertainty. This one aims to make your uncertainty measurable and your risk
+defined.</p></div>
+</div>
+<p>The language throughout is deliberately probabilistic. You will not read
+“this always works.” You will read “higher-probability,” “valid setup,”
+“favourable conditions.” That is not hedging — certainty language causes
+oversizing and refusal to exit, and the vocabulary shapes the behaviour.</p>
+
+</main>
+
+<footer class="sitefoot"><div class="wrap">
+  <p><strong>Educational material only.</strong> Nothing here is financial
+  advice, a solicitation, or a promise of results. Trading involves substantial
+  risk of loss. All charts are illustrative and synthetic; they depict decision
+  logic, not historical performance. Test any method in simulation before
+  risking capital.</p>
+  <p class="foot2">Precision Intraday Trading &middot; Price Action &amp; Structure
+  System &middot; 11 modules</p>
+</div></footer>
+
+<script>
+(function(){
+  // drawer
+  var mb=document.getElementById('menubtn'),dr=document.getElementById('drawer'),
+      sc=document.getElementById('scrim');
+  function close(){dr.classList.remove('open');sc.classList.remove('open');}
+  if(mb){mb.addEventListener('click',function(){
+    dr.classList.toggle('open');sc.classList.toggle('open');});}
+  if(sc){sc.addEventListener('click',close);}
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+
+  // quiz interaction — unique feedback per option
+  document.querySelectorAll('.opt').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var quiz=btn.closest('.quiz');
+      if(quiz.classList.contains('answered'))return;
+      var i=btn.dataset.i,qid=btn.dataset.q;
+      quiz.classList.add('answered');
+      btn.classList.add('picked');
+      var fb=document.getElementById(qid+'-fb'+i);
+      if(fb)fb.classList.add('show');
+      // if they were wrong, also reveal the correct option's explanation
+      if(btn.dataset.r==='wrong'){
+        var right=quiz.querySelector('.opt[data-r="correct"]');
+        if(right){
+          var ri=right.dataset.i;
+          var rfb=document.getElementById(qid+'-fb'+ri);
+          if(rfb)setTimeout(function(){rfb.classList.add('show');},260);
+        }
+      }
+      setTimeout(function(){
+        var r=fb.getBoundingClientRect();
+        if(r.bottom>window.innerHeight){
+          fb.scrollIntoView({behavior:'smooth',block:'nearest'});}
+      },80);
+    });
+  });
+
+  // progress tracking
+  var KEY='pit_progress_v1';
+  function read(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}
+    catch(e){return {};}}
+  function write(o){try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
+  var pg=document.body.dataset.page;
+  if(pg&&pg!=='index'){
+    var seen=false;
+    window.addEventListener('scroll',function(){
+      if(seen)return;
+      var d=document.documentElement;
+      var pct=(window.scrollY+window.innerHeight)/d.scrollHeight;
+      if(pct>0.82){seen=true;var o=read();o[pg]=1;write(o);}
+    },{passive:true});
+  }
+  var prog=read();
+  document.querySelectorAll('[data-modkey]').forEach(function(el){
+    if(prog[el.dataset.modkey]){el.classList.add('done');}
+  });
+  document.querySelectorAll('.toc-mod > a').forEach(function(a){
+    var k=a.dataset.key;
+    if(k&&prog[k])a.classList.add('done');
+    if(k===pg)a.classList.add('active');
+  });
+  var rb=document.getElementById('resetprog');
+  if(rb){rb.addEventListener('click',function(){
+    localStorage.removeItem(KEY);location.reload();});}
+})();
+</script>
+</body></html>
